@@ -26,3 +26,21 @@ from  ldn group by ldn.loan_id ) ldn  join v3_loans vl on ldn.loan_id =vl.id
 join loan_max_view lmv on lmv.loan_id =vl.id 
 left join loan_min_view lmv2 on lmv2.loan_id =vl.id
 where vl.lender_id =1756833      order by vl.id
+
+
+
+--ruby 
+select vl.product_type  ,vl.sub_product_type as loan_type,vld.loan_type ,vld.rc_loan_status,vld.lender_id  , vl.user_id ,vl.id as loan_id , 
+        vld.emi_plan  as EMI_option,vld.down_payment  as downpayment , vld.net_product_price  ,vld.product_price as gross_principal ,vld.rc_refund_amount ,
+        vld.min_amount_for_drawdown  as Min_Value_for_drawdown,
+        vld.closing_amount_for_drawdown  as Max_value_for_drawdown,
+        vld.interest_rate /12 as  Rate_of_interest, vl.interest_type ,vld.agreement_date  as loan_date
+from v3_loan_data vld join v3_loans vl on vl.id=vld.loan_id 
+where vld.lender_id =1756833 and loan_type='drawdown' and vld.row_status ='active' 
+--  subvention_amount
+
+select  view_tags->'Tenure Details'->>'subvention_amount' as subvention_amount  ,* from v3_user_data vud join v3_loans vl on vl.user_id =vud.user_id 
+where  vl.lender_id=1756833
+and row_status ='active' 
+and vl.amortization_date is not null and view_tags->'Tenure Details'->>'subvention_amount' is not null
+order by vl.user_id ;
